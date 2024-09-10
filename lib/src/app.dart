@@ -1,3 +1,4 @@
+import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/app_routes.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,10 @@ class MyApp extends StatelessWidget {
   MyApp({
     super.key,
     required this.settingsController,
-  }) {
-    botonPreferences = BotonPreferences();
-  }
-
+  }) {}
+  final Alertservice notificationService = Alertservice();
   final SettingsController settingsController;
-  late BotonPreferences botonPreferences;
+  final BotonPreferences botonPreferences = BotonPreferences();
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +40,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: settingsController.themeMode,
-            onGenerateRoute: (settings) =>
-                generateRoute(settings, settingsController, botonPreferences));
+            onGenerateRoute: (settings) => generateRoute(settings,
+                settingsController, botonPreferences, notificationService));
       },
     );
   }

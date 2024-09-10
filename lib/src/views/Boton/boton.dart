@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/menu/AppDrawer.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BotonView extends StatefulWidget {
   static const routeName = '/';
@@ -10,18 +12,29 @@ class BotonView extends StatefulWidget {
   const BotonView({
     super.key,
     required this.botonPreferences,
+    required this.alertservice,
   });
 
   final BotonPreferences botonPreferences;
-
+  final Alertservice alertservice;
   @override
-  _BotonViewState createState() => _BotonViewState();
+  _BotonViewState createState() =>
+      _BotonViewState(botonPreferences, alertservice);
 }
 
 class _BotonViewState extends State<BotonView> {
   static const initTimer = 3;
   static const inactivityDuration = 1500; // 1.5 segundos en milisegundos
-
+  final BotonPreferences _botonPreferences;
+  final Alertservice _alertservice;
+  _BotonViewState(this._botonPreferences, this._alertservice) {
+    //si el boton esta presionado redirijo a la pagina de alerta
+    this._botonPreferences.isBotonPresionado().then((isPressed) {
+      if (isPressed) {
+        Navigator.pushNamed(context, '/alerta');
+      }
+    });
+  }
   int _start = initTimer; // Temporizador en segundos
   Timer? _timer;
   Timer? _inactivityTimer;
@@ -51,7 +64,7 @@ class _BotonViewState extends State<BotonView> {
   void _stopTimer() {
     _timer?.cancel();
     setState(() {
-      _start = initTimer; // Reinicia el temporizador a 3 segundos
+      _start = initTimer;
     });
   }
 
@@ -61,10 +74,10 @@ class _BotonViewState extends State<BotonView> {
         _start--;
       });
       if (_start == 0) {
-        _sendAlert(); // Llama a la alerta si llega a 0 con los taps rápidos
+        _sendAlert();
       }
     }
-    _resetInactivityTimer(); // Reinicia el temporizador de inactividad
+    _resetInactivityTimer();
   }
 
   void _resetInactivityTimer() {
@@ -72,30 +85,44 @@ class _BotonViewState extends State<BotonView> {
     _inactivityTimer =
         Timer(const Duration(milliseconds: inactivityDuration), () {
       setState(() {
-        _start =
-            initTimer; // Reinicia el contador si pasan 1.5 segundos sin acción
+        _start = initTimer;
       });
     });
   }
 
-  void _sendAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Alerta de Emergencia'),
-          content: const Text('¡Se ha enviado una alerta de emergencia!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _sendAlert() async {
+    //VERIFICO SI HAY CONEXION A INTERNET Y SI HAY CONEXION CON EL SERVIDOR
+    if (await _alertservice.verificarConexion()) {
+      _botonPreferences.setBotonPresionado(true);
+      //redirijo a la pagina de alerta
+      Navigator.pushNamed(context, '/alerta');
+    } else {
+      // si no hay conexion mando una alerta en espera y lo redirijo para llamar al 911
+      // muestro una alerta y lo redirecciono a la pantalla de llamada al 911
+      //que habra la aplicacion de telefono con un tel:911
+      //Dialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('No hay conexión a internet o el servidor '),
+            content: const Text(
+                'No se pudo enviar la alerta, por favor, llamar al 911.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  //Llamar al 911
+
+                  launchUrl(Uri.parse('tel:911'));
+                },
+                child: const Text('Llamar al 911'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
