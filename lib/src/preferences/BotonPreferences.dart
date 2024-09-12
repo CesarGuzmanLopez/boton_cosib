@@ -79,4 +79,14 @@ class BotonPreferences {
     await prefs.remove('isUAM');
     await prefs.remove('tipo_alerta');
   }
+
+  setVideoPath(String filePath) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('video_path', filePath);
+  }
+
+  getVideoPath() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('video_path');
+  }
 }

@@ -2,6 +2,7 @@ import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/menu/AppDrawer.dart';
 import 'package:boton_cosib/src/model/alertType.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
+import 'package:boton_cosib/src/views/Alerta/alertaTypeView.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -58,6 +59,7 @@ class _AlertaViewState extends State<AlertaView> {
           content: Text('Alerta enviada correctamente'),
         ),
       );
+      Navigator.pushNamed(context, AlertaTypeView.routeName);
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -96,6 +98,7 @@ class _AlertaViewState extends State<AlertaView> {
         content: Text('Redirigiendo a la página de reporte'),
       ),
     );
+    Navigator.pushNamed(context, AlertaTypeView.routeName);
   }
 
   @override

@@ -1,6 +1,7 @@
 // app_routes.dart
 import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
+import 'package:boton_cosib/src/views/Alerta/alertaTypeView.dart';
 import 'package:boton_cosib/src/views/Alerta/alertaView.dart';
 import 'package:boton_cosib/src/views/Boton/boton.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,11 @@ Route<dynamic> generateRoute(
           builder: (context) => AlertaView(
                 botonPreferences: botonPreferences,
                 alertservice: alertservice,
+              ));
+    case AlertaTypeView.routeName:
+      return MaterialPageRoute(
+          builder: (context) => AlertaTypeView(
+                botonPreferences: botonPreferences,
               ));
     default:
       return MaterialPageRoute(

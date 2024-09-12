@@ -65,6 +65,7 @@ class Alertservice {
       }
     } catch (e) {
       _botonPreferences.setBotonPresionado(isPressed: false);
+      _botonPreferences.deleteAllData();
       throw Exception("Error al enviar la alerta: $e");
     }
   }
@@ -90,11 +91,12 @@ class Alertservice {
         enviarMensajePostRequest: enviarMensajePostRequest,
       );
 
-      await _userPreferences.deleteBearerToken();
-      await _botonPreferences.deleteAllData();
       _botonPreferences.setBotonPresionado(isPressed: false);
     } catch (e) {
       throw Exception("Error al cancelar la alerta: $e");
+    } finally {
+      await _userPreferences.deleteBearerToken();
+      await _botonPreferences.deleteAllData();
     }
   }
 
