@@ -7,21 +7,30 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.1
+  sdk: ^3.5.0
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  dio: ^5.0.0 # Dependencia para manejar las solicitudes HTTP
+  json_annotation: ^4.8.0 # Manejo de la serialización/deserialización JSON
+  openapi_generator_annotations: ^4.11.0 # Anotaciones necesarias para la generación de código OpenAPI
   shared_preferences: ^2.3.2
   url_launcher: ^6.3.0
-
+  build_runner: ^2.4.0 # Herramienta para generar código adicional
+  json_serializable: ^6.7.0 # Generador de código para la serialización JSON
+  openapi_generator: ^4.11.0 # Generador de código OpenAPI
+  boton_api:
+    path: lib/boton_api
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^4.0.0
+  build_runner: ^2.4.0 # Herramienta para generar código adicional
+  json_serializable: ^6.7.0 # Generador de código para la serialización JSON
+  openapi_generator: ^4.11.0 # Generador de código OpenAPI
 
 flutter:
   uses-material-design: true

@@ -93,9 +93,40 @@ class _BotonViewState extends State<BotonView> {
   Future<void> _sendAlert() async {
     //VERIFICO SI HAY CONEXION A INTERNET Y SI HAY CONEXION CON EL SERVIDOR
     if (await _alertservice.verificarConexion()) {
-      _botonPreferences.setBotonPresionado(true);
-      //redirijo a la pagina de alerta
-      Navigator.pushNamed(context, '/alerta');
+      //verifico si esta adentro de la UAM
+      if (await _alertservice.verificarUbicacionUAM()) {
+        _botonPreferences.setBotonPresionado(isPressed: true);
+        _alertservice.enviarAlerta();
+        Navigator.pushNamed(context, '/alerta');
+      } else {
+        // no se pudo envar la alerta ya que no esta en la uam enviar
+
+        _alertservice.enviarAlertaFueraUAM();
+        _botonPreferences.setBotonPresionado(isPressed: true, isUAM: false);
+        //muestro un dialogo de que llame al 911 porque no esta en la UAM
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('No estás en la UAM'),
+              content: const Text(
+                  'No se pudo enviar la alerta, por favor, llamar al 911.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    //Llamar al 911
+                    launchUrl(Uri.parse('tel:911'));
+                    _botonPreferences.setBotonPresionado(isPressed: true);
+                    Navigator.pushNamed(context, '/alerta');
+                  },
+                  child: const Text('Llamar al 911'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       // si no hay conexion mando una alerta en espera y lo redirijo para llamar al 911
       // muestro una alerta y lo redirecciono a la pantalla de llamada al 911

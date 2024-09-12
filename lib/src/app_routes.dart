@@ -1,7 +1,7 @@
 // app_routes.dart
 import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
-import 'package:boton_cosib/src/views/Boton%20copy/boton.dart';
+import 'package:boton_cosib/src/views/Alerta/alertaView.dart';
 import 'package:boton_cosib/src/views/Boton/boton.dart';
 import 'package:flutter/material.dart';
 

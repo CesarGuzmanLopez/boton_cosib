@@ -97,7 +97,7 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                   _buildTextField(
                     controller: _matriculaController,
-                    label: 'Matrícula',
+                    label: 'Matrícula o numero de empleado',
                     field: 'matricula',
                   ),
                   _buildTextField(

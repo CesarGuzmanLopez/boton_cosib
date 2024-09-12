@@ -23,7 +23,6 @@ class UserPreferences {
     final String? matricula = prefs.getString(_keyMatricula);
     final String? numeroTelefono = prefs.getString(_keyNumeroTelefono);
     final String? correoElectronico = prefs.getString(_keyCorreoElectronico);
-
     return User(
       nombreCompleto: nombreCompleto,
       matricula: matricula,
@@ -39,5 +38,17 @@ class UserPreferences {
     await prefs.remove(_keyMatricula);
     await prefs.remove(_keyNumeroTelefono);
     await prefs.remove(_keyCorreoElectronico);
+  }
+
+  //guardi ek bearer token
+  Future<void> saveBearerToken(String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('bearer_token', token);
+  }
+
+  //obtener el bearer token
+  Future<String> getBearerToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('bearer_token') ?? '';
   }
 }

@@ -6,16 +6,15 @@ class BotonPreferences {
   static const _durationLimit = Duration(hours: 6); // Límite de 6 horas
 
   // Guardar el estado del botón junto con la fecha y hora actual
-  Future<void> setBotonPresionado(bool isPressed) async {
+  Future<void> setBotonPresionado(
+      {bool isPressed = true, bool isUAM = false}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyBotonPresionado, isPressed);
-
+    await prefs.setBool('isUAM', isUAM);
     if (isPressed) {
-      // Guardar la fecha y hora actual en formato UNIX timestamp (milisegundos)
       final int currentTime = DateTime.now().millisecondsSinceEpoch;
       await prefs.setInt(_keyFechaPresionado, currentTime);
     } else {
-      // Eliminar la fecha si el botón no está presionado
       await prefs.remove(_keyFechaPresionado);
     }
   }
@@ -47,5 +46,11 @@ class BotonPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyBotonPresionado);
     await prefs.remove(_keyFechaPresionado);
+  }
+
+  Future<bool> isUAM() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isUAM = prefs.getBool('isUAM');
+    return isUAM ?? false;
   }
 }

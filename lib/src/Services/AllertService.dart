@@ -1,21 +1,24 @@
-import 'dart:io';
+import 'package:boton_cosib/boton_api/lib/src/api.dart';
+import 'package:boton_cosib/boton_api/lib/src/api/default_api.dart';
+import 'package:boton_cosib/boton_api/lib/src/model/enviar_mensaje_post_request.dart';
+import 'package:dio/dio.dart';
 
 class Alertservice {
+  Alertservice({required this.botonApi});
+  final BotonApi botonApi;
   // Método para verificar la conexión a Internet
   Future<bool> verificarConexion() async {
-    return false;
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      return false;
-    }
+    DefaultApi api = botonApi.getDefaultApi();
+    Response<EnviarMensajePostRequest> respuesta =
+        await api.checarComunicacionGet();
+    return respuesta.statusCode == 200;
   }
 
-  // Método para enviar una alerta (solo un ejemplo)
-  void enviarAlerta(String mensaje) {
-    // Aquí podrías implementar la lógica para enviar una alerta, como mostrar un diálogo
-    // Este es un ejemplo simple usando `print`, en una aplicación real podrías usar `showDialog` o un sistema de notificaciones
-    print('Alerta: $mensaje');
+  void enviarAlerta() {}
+  void enviarAlertaFueraUAM() {}
+  void cancelarAlerta() {}
+  //funcion que verifica si esta adentro de la UAM
+  Future<bool> verificarUbicacionUAM() async {
+    return true;
   }
 }

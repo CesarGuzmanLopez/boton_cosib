@@ -1,3 +1,4 @@
+import 'package:boton_cosib/boton_api/lib/src/api.dart';
 import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/app_routes.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
@@ -12,11 +13,14 @@ class MyApp extends StatelessWidget {
   MyApp({
     super.key,
     required this.settingsController,
-  }) {}
-  final Alertservice notificationService = Alertservice();
+    required BotonApi botonApi,
+  }) {
+    alertService = Alertservice(botonApi: botonApi);
+  }
+  late final Alertservice alertService;
   final SettingsController settingsController;
   final BotonPreferences botonPreferences = BotonPreferences();
-
+  late final BotonApi botonApi;
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -40,8 +44,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: settingsController.themeMode,
-            onGenerateRoute: (settings) => generateRoute(settings,
-                settingsController, botonPreferences, notificationService));
+            onGenerateRoute: (settings) => generateRoute(
+                settings, settingsController, botonPreferences, alertService));
       },
     );
   }

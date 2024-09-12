@@ -10,7 +10,7 @@ class AlertaView extends StatefulWidget {
     super.key,
     required this.botonPreferences,
     required this.alertservice,
-  }) {}
+  });
 
   final BotonPreferences botonPreferences;
   final Alertservice alertservice;
@@ -23,7 +23,7 @@ class _AlertaViewState extends State<AlertaView> {
   final BotonPreferences _botonPreferences;
   final Alertservice _alertservice;
   _AlertaViewState(this._botonPreferences, this._alertservice) {
-    this._botonPreferences.isBotonPresionado().then((isPressed) {
+    _botonPreferences.isBotonPresionado().then((isPressed) {
       if (!isPressed) {
         Navigator.pushNamed(context, '/');
       }
@@ -43,13 +43,13 @@ class _AlertaViewState extends State<AlertaView> {
         title: const Text('Botón de Emergencia'),
       ),
       body: Center(
-        child: Card(
-          color: Colors.green,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 8,
-          margin: const EdgeInsets.all(16),
+        child: ElevatedButton(
+          onPressed: () {
+            _alertservice.cancelarAlerta();
+            _botonPreferences.setBotonPresionado(isPressed: false);
+            Navigator.pushNamed(context, '/');
+          },
+          child: const Text('Cancelar Alerta'),
         ),
       ),
     );
