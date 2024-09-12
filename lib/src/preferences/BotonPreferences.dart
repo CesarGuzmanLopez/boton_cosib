@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:boton_cosib/src/model/alertType.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BotonPreferences {
@@ -38,7 +41,7 @@ class BotonPreferences {
       }
       return true;
     }
-    return false; // Si no hay datos, el botón no fue presionado
+    return false; // Si no hay datos guardados, el botón no fue presionado
   }
 
   // Eliminar el estado del botón y la fecha
@@ -48,9 +51,32 @@ class BotonPreferences {
     await prefs.remove(_keyFechaPresionado);
   }
 
-  Future<bool> isUAM() async {
+  Future<void> setTipoAlerta(AlertButtonType? type) async {
+    //si es null, no se guarda nada
+    if (type == null) {
+      return;
+    }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? isUAM = prefs.getBool('isUAM');
-    return isUAM ?? false;
+    prefs.setString('tipo_alerta', type.toString());
+  }
+
+  Future<AlertButtonType?> getTipoAlerta() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? tipoAlerta = prefs.getString('tipo_alerta');
+    if (tipoAlerta != null) {
+      return AlertButtonType.values
+          .firstWhere((element) => element.toString() == tipoAlerta);
+    } else {
+      return null;
+    }
+  }
+
+  //Eliminar todos los datos menos el uuid
+  Future<void> deleteAllData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyBotonPresionado);
+    await prefs.remove(_keyFechaPresionado);
+    await prefs.remove('isUAM');
+    await prefs.remove('tipo_alerta');
   }
 }

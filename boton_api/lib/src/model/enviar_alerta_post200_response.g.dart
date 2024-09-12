@@ -10,13 +10,19 @@ class _$EnviarAlertaPost200Response extends EnviarAlertaPost200Response {
   @override
   final String? token;
   @override
-  final String? contenido;
+  final num? idMensaje;
+  @override
+  final DateTime? horaEnvio;
+  @override
+  final bool? uam;
 
   factory _$EnviarAlertaPost200Response(
           [void Function(EnviarAlertaPost200ResponseBuilder)? updates]) =>
       (new EnviarAlertaPost200ResponseBuilder()..update(updates))._build();
 
-  _$EnviarAlertaPost200Response._({this.token, this.contenido}) : super._();
+  _$EnviarAlertaPost200Response._(
+      {this.token, this.idMensaje, this.horaEnvio, this.uam})
+      : super._();
 
   @override
   EnviarAlertaPost200Response rebuild(
@@ -32,14 +38,18 @@ class _$EnviarAlertaPost200Response extends EnviarAlertaPost200Response {
     if (identical(other, this)) return true;
     return other is EnviarAlertaPost200Response &&
         token == other.token &&
-        contenido == other.contenido;
+        idMensaje == other.idMensaje &&
+        horaEnvio == other.horaEnvio &&
+        uam == other.uam;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
     _$hash = $jc(_$hash, token.hashCode);
-    _$hash = $jc(_$hash, contenido.hashCode);
+    _$hash = $jc(_$hash, idMensaje.hashCode);
+    _$hash = $jc(_$hash, horaEnvio.hashCode);
+    _$hash = $jc(_$hash, uam.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -48,7 +58,9 @@ class _$EnviarAlertaPost200Response extends EnviarAlertaPost200Response {
   String toString() {
     return (newBuiltValueToStringHelper(r'EnviarAlertaPost200Response')
           ..add('token', token)
-          ..add('contenido', contenido))
+          ..add('idMensaje', idMensaje)
+          ..add('horaEnvio', horaEnvio)
+          ..add('uam', uam))
         .toString();
   }
 }
@@ -63,9 +75,17 @@ class EnviarAlertaPost200ResponseBuilder
   String? get token => _$this._token;
   set token(String? token) => _$this._token = token;
 
-  String? _contenido;
-  String? get contenido => _$this._contenido;
-  set contenido(String? contenido) => _$this._contenido = contenido;
+  num? _idMensaje;
+  num? get idMensaje => _$this._idMensaje;
+  set idMensaje(num? idMensaje) => _$this._idMensaje = idMensaje;
+
+  DateTime? _horaEnvio;
+  DateTime? get horaEnvio => _$this._horaEnvio;
+  set horaEnvio(DateTime? horaEnvio) => _$this._horaEnvio = horaEnvio;
+
+  bool? _uam;
+  bool? get uam => _$this._uam;
+  set uam(bool? uam) => _$this._uam = uam;
 
   EnviarAlertaPost200ResponseBuilder() {
     EnviarAlertaPost200Response._defaults(this);
@@ -75,7 +95,9 @@ class EnviarAlertaPost200ResponseBuilder
     final $v = _$v;
     if ($v != null) {
       _token = $v.token;
-      _contenido = $v.contenido;
+      _idMensaje = $v.idMensaje;
+      _horaEnvio = $v.horaEnvio;
+      _uam = $v.uam;
       _$v = null;
     }
     return this;
@@ -97,7 +119,8 @@ class EnviarAlertaPost200ResponseBuilder
 
   _$EnviarAlertaPost200Response _build() {
     final _$result = _$v ??
-        new _$EnviarAlertaPost200Response._(token: token, contenido: contenido);
+        new _$EnviarAlertaPost200Response._(
+            token: token, idMensaje: idMensaje, horaEnvio: horaEnvio, uam: uam);
     replace(_$result);
     return _$result;
   }

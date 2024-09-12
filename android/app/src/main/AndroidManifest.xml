@@ -1,4 +1,33 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.boton_cosib">
+
+    <!-- Permisos de ubicación -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Permiso de cámara -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Permiso de acceso a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permisos de red -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- Permiso de estado del teléfono -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- Permisos de calendario -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
+    <!-- Permiso de vibración -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Permisos de notificación (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:label="boton_cosib"
         android:name="${applicationName}"
@@ -31,6 +60,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.

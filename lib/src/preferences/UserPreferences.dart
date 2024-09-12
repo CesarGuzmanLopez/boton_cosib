@@ -1,5 +1,6 @@
 import 'package:boton_cosib/src/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class UserPreferences {
   static const _keyNombreCompleto = 'user_nombreCompleto';
@@ -40,15 +41,42 @@ class UserPreferences {
     await prefs.remove(_keyCorreoElectronico);
   }
 
-  //guardi ek bearer token
+  Future<void> estaEnLaUAM(bool isUam) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isUam', isUam);
+  }
+
+  Future<bool> getEstaEnLaUAM() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return Future.value(prefs.getBool('isUam') ?? false);
+  }
+
+  //guardo el bearer token
   Future<void> saveBearerToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('bearer_token', token);
   }
 
   //obtener el bearer token
-  Future<String> getBearerToken() async {
+  Future<String?> getBearerToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('bearer_token') ?? '';
+    return prefs.getString('bearer_token');
+  }
+
+  Future<void> deleteBearerToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('bearer_token');
+  }
+
+  Future<String> getIdDispositivo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final idDispositivo = prefs.getString('id_dispositivo');
+    if (idDispositivo == null) {
+      final newId = const Uuid().v4();
+      await prefs.setString('id_dispositivo', newId);
+      return newId;
+    }
+    return idDispositivo;
   }
 }

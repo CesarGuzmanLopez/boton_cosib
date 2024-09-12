@@ -23,7 +23,10 @@ dependencies:
   json_serializable: ^6.7.0 # Generador de código para la serialización JSON
   openapi_generator: ^4.11.0 # Generador de código OpenAPI
   boton_api:
-    path: lib/boton_api
+    path: boton_api
+  geolocator: ^13.0.1
+  uuid: ^4.5.0
+  flutter_dotenv: ^5.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -41,3 +44,5 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/
+    - .env

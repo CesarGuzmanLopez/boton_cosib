@@ -8,7 +8,7 @@ class SettingsController with ChangeNotifier {
 
   final SettingsService _settingsService;
   final UserPreferences _userPreferences;
-  late ThemeMode _themeMode;
+  late ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
 
   User? _user;

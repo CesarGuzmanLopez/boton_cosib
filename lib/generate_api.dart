@@ -9,7 +9,6 @@ import 'package:openapi_generator_annotations/openapi_generator_annotations.dart
     runSourceGenOnOutput: true,
     inputSpecFile: 'openapi.yaml', // Ruta relativa al archivo OpenAPI
     generatorName: Generator.dio,
-    outputDirectory:
-        'lib/boton_api' // Directorio de salida para el código generado
+    outputDirectory: 'boton_api' // Directorio de salida para el código generado
     )
 class GeneratorApi {}

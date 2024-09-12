@@ -4,9 +4,9 @@ info:
   description: "API para el envío de alertas, mensajes, fotos, audios, videos, reportes y comunicación WebSocket a través de un servicio de Telegram."
   version: 1.0.0-oas3.1
 servers:
-- url: /boton
-- url: /ws
-  description: WebSocket server
+  - url: /boton
+  - url: /ws
+    description: WebSocket server
 paths:
   /enviarAlerta:
     post:
@@ -20,8 +20,8 @@ paths:
             schema:
               type: object
               required:
-              - idDispositivo
-              - localizacion
+                - idDispositivo
+                - localizacion
               properties:
                 idDispositivo:
                   type: string
@@ -70,8 +70,16 @@ paths:
                 properties:
                   token:
                     type: string
-                  contenido:
+                  idMensaje:
+                    type: number
+                    description: ID del mensaje.
+                  horaEnvio:
                     type: string
+                    format: date-time
+                    description: Hora de envío de la alerta.
+                  uam:
+                    type: boolean
+                    description: Indica si la alerta fue enviada desde la UAM.
         "401":
           description: Token no válido.
         "500":
@@ -81,11 +89,11 @@ paths:
       summary: Enviar un mensaje
       description: Envía un mensaje de texto al servicio de Telegram.
       parameters:
-      - in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Mensaje a enviar
         required: true
@@ -115,11 +123,11 @@ paths:
       summary: Enviar una foto
       description: Envía una foto a través del servicio de Telegram.
       parameters:
-      - in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Foto en formato de bytes
         required: true
@@ -151,11 +159,11 @@ paths:
       summary: Enviar un audio
       description: Envía un archivo de audio al servicio de Telegram.
       parameters:
-      - in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Audio en formato de bytes
         required: true
@@ -183,11 +191,11 @@ paths:
       summary: Enviar un video
       description: Envía un video a través del servicio de Telegram.
       parameters:
-      - in: header
-        name: Authorization
-        required: true
-        schema:
-          type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Video en formato de bytes
         required: true
@@ -247,11 +255,11 @@ paths:
       summary: Obtener un reporte por ID
       description: Devuelve un reporte específico basado en su ID.
       parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Reporte devuelto exitosamente.
@@ -271,8 +279,8 @@ components:
     SolicitudAlerta:
       type: object
       required:
-      - idDispositivo
-      - localizacion
+        - idDispositivo
+        - localizacion
       properties:
         idDispositivo:
           type: string
@@ -357,9 +365,9 @@ x-websocket:
       summary: Conectarse al WebSocket para recibir mensajes de Telegram
       description: Envía mensajes al WebSocket y los suscriptores recibirán mensajes a través del destino `/topic/telegram`.
       message:
-        $ref: '#/components/schemas/Messages'
+        $ref: "#/components/schemas/Messages"
     publish:
       summary: Publicar mensajes en WebSocket
       description: Publica mensajes que serán enviados a los suscriptores en el destino `/topic/telegram`.
       message:
-        $ref: '#/components/schemas/Information'
+        $ref: "#/components/schemas/Information"

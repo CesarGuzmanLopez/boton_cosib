@@ -42,4 +42,3 @@ lib/src/model/respuesta.dart
 lib/src/model/solicitud.dart
 lib/src/model/solicitud_alerta.dart
 lib/src/serializers.dart
-pubspec.yaml

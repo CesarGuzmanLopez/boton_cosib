@@ -12,14 +12,25 @@ part 'enviar_alerta_post200_response.g.dart';
 ///
 /// Properties:
 /// * [token] 
-/// * [contenido] 
+/// * [idMensaje] - ID del mensaje.
+/// * [horaEnvio] - Hora de envío de la alerta.
+/// * [uam] - Indica si la alerta fue enviada desde la UAM.
 @BuiltValue()
 abstract class EnviarAlertaPost200Response implements Built<EnviarAlertaPost200Response, EnviarAlertaPost200ResponseBuilder> {
   @BuiltValueField(wireName: r'token')
   String? get token;
 
-  @BuiltValueField(wireName: r'contenido')
-  String? get contenido;
+  /// ID del mensaje.
+  @BuiltValueField(wireName: r'idMensaje')
+  num? get idMensaje;
+
+  /// Hora de envío de la alerta.
+  @BuiltValueField(wireName: r'horaEnvio')
+  DateTime? get horaEnvio;
+
+  /// Indica si la alerta fue enviada desde la UAM.
+  @BuiltValueField(wireName: r'uam')
+  bool? get uam;
 
   EnviarAlertaPost200Response._();
 
@@ -51,11 +62,25 @@ class _$EnviarAlertaPost200ResponseSerializer implements PrimitiveSerializer<Env
         specifiedType: const FullType(String),
       );
     }
-    if (object.contenido != null) {
-      yield r'contenido';
+    if (object.idMensaje != null) {
+      yield r'idMensaje';
       yield serializers.serialize(
-        object.contenido,
-        specifiedType: const FullType(String),
+        object.idMensaje,
+        specifiedType: const FullType(num),
+      );
+    }
+    if (object.horaEnvio != null) {
+      yield r'horaEnvio';
+      yield serializers.serialize(
+        object.horaEnvio,
+        specifiedType: const FullType(DateTime),
+      );
+    }
+    if (object.uam != null) {
+      yield r'uam';
+      yield serializers.serialize(
+        object.uam,
+        specifiedType: const FullType(bool),
       );
     }
   }
@@ -88,12 +113,26 @@ class _$EnviarAlertaPost200ResponseSerializer implements PrimitiveSerializer<Env
           ) as String;
           result.token = valueDes;
           break;
-        case r'contenido':
+        case r'idMensaje':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(String),
-          ) as String;
-          result.contenido = valueDes;
+            specifiedType: const FullType(num),
+          ) as num;
+          result.idMensaje = valueDes;
+          break;
+        case r'horaEnvio':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(DateTime),
+          ) as DateTime;
+          result.horaEnvio = valueDes;
+          break;
+        case r'uam':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(bool),
+          ) as bool;
+          result.uam = valueDes;
           break;
         default:
           unhandled.add(key);

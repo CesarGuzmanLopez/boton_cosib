@@ -3,12 +3,14 @@ class User {
   final String? matricula;
   final String? numeroTelefono;
   final String? correoElectronico;
+  final String? idDispositivo;
 
   User({
     this.nombreCompleto,
     this.matricula,
     this.numeroTelefono,
     this.correoElectronico,
+    this.idDispositivo,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class User {
       'matricula': matricula,
       'numeroTelefono': numeroTelefono,
       'correoElectronico': correoElectronico,
+      'idDispositivo': idDispositivo,
     };
   }
 
@@ -26,6 +29,7 @@ class User {
       matricula: map['matricula'],
       numeroTelefono: map['numeroTelefono'],
       correoElectronico: map['correoElectronico'],
+      idDispositivo: map['idDispositivo'],
     );
   }
 
@@ -35,12 +39,14 @@ class User {
     String? matricula,
     String? numeroTelefono,
     String? correoElectronico,
+    String? idDispositivo,
   }) {
     return User(
       nombreCompleto: nombreCompleto ?? this.nombreCompleto,
       matricula: matricula ?? this.matricula,
       numeroTelefono: numeroTelefono ?? this.numeroTelefono,
       correoElectronico: correoElectronico ?? this.correoElectronico,
+      idDispositivo: idDispositivo ?? this.idDispositivo,
     );
   }
 }

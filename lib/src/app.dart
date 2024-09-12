@@ -1,4 +1,4 @@
-import 'package:boton_cosib/boton_api/lib/src/api.dart';
+import 'package:boton_api/boton_api.dart';
 import 'package:boton_cosib/src/Services/AllertService.dart';
 import 'package:boton_cosib/src/app_routes.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';

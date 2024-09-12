@@ -1,11 +1,14 @@
-import 'package:boton_cosib/boton_api/lib/src/api.dart';
+import 'package:boton_api/boton_api.dart';
 import 'package:boton_cosib/src/app.dart';
 import 'package:boton_cosib/src/preferences/UserPreferences.dart';
 import 'package:boton_cosib/src/preferences/settings_controller.dart';
 import 'package:boton_cosib/src/views/settings/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env"); // Carga el archivo .env
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializar UserPreferences
@@ -13,7 +16,7 @@ void main() async {
   final settingsService = SettingsService();
 
   // Obtener el token Bearer y la URL base
-  final String bearerToken = await userPreferences.getBearerToken();
+  final String bearerToken = await userPreferences.getBearerToken() ?? '';
   const String baseUrl =
       'http://jquiroz.net:81/boton'; // Ajusta la URL base si es necesario
 
