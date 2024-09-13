@@ -1,11 +1,12 @@
 // app_routes.dart
 import 'package:boton_cosib/src/Services/AlertService.dart';
-import 'package:boton_cosib/src/Services/ChatService..dart';
+import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:boton_cosib/src/views/Alerta/alertaTypeView.dart';
 import 'package:boton_cosib/src/views/Alerta/alertaView.dart';
 import 'package:boton_cosib/src/views/Alerta/chatView.dart';
 import 'package:boton_cosib/src/views/Boton/boton.dart';
+import 'package:boton_cosib/src/views/ServiciosCsib/serviciosPage.dart';
 import 'package:flutter/material.dart';
 
 import 'preferences/settings_controller.dart';
@@ -47,6 +48,8 @@ Route<dynamic> generateRoute(
           builder: (context) => ChatView(
                 chatService: chatService,
               ));
+    case ServicesPage.routeName:
+      return MaterialPageRoute(builder: (context) => ServicesPage());
     default:
       return MaterialPageRoute(
           builder: (context) => Material(

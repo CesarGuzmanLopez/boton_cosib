@@ -1,5 +1,5 @@
 import 'package:boton_api/boton_api.dart';
-import 'package:boton_cosib/src/Services/ChatService..dart';
+import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:boton_cosib/src/app.dart';
 import 'package:boton_cosib/src/preferences/UserPreferences.dart';
 import 'package:boton_cosib/src/preferences/settings_controller.dart';

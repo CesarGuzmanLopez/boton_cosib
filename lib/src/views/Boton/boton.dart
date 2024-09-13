@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:boton_cosib/src/Services/AlertService.dart';
-import 'package:boton_cosib/src/Services/ChatService..dart';
+import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:boton_cosib/src/menu/AppDrawer.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';
@@ -12,66 +12,59 @@ class BotonView extends StatefulWidget {
   static const routeName = '/';
 
   const BotonView({
-    super.key,
+    Key? key,
     required this.botonPreferences,
     required this.alertservice,
     required ChatService chatService,
-  }) : _chatService = chatService;
+  })  : _chatService = chatService,
+        super(key: key);
 
   final BotonPreferences botonPreferences;
   final AlertService alertservice;
   final ChatService _chatService;
+
   @override
-  _BotonViewState createState() =>
-      _BotonViewState(botonPreferences, alertservice, _chatService);
+  _BotonViewState createState() => _BotonViewState();
 }
 
 class _BotonViewState extends State<BotonView> {
-  static const initTimer = 3;
-  late int inactivityDuration;
+  static const int initTimer = 3;
+  late final int inactivityDuration;
+  late final BotonPreferences _botonPreferences;
+  late final AlertService _alertservice;
+  late final ChatService _chatService;
 
-  final BotonPreferences _botonPreferences;
-  final AlertService _alertservice;
-  final ChatService _chatService;
   int _start = initTimer;
   Timer? _timer;
   Timer? _inactivityTimer;
   bool _isConnected = true;
 
-  _BotonViewState(
-      this._botonPreferences, this._alertservice, this._chatService) {
-    _checkInitialButtonState();
-    inactivityDuration =
-        int.parse(dotenv.env['TIEMPO_CHECAR_CONEXION_MILISEGUNDOS'] ?? '1500');
-    print('Inactivity duration: $inactivityDuration');
-  }
-
   @override
   void initState() {
     super.initState();
-    _checkInternetConnection();
+    _botonPreferences = widget.botonPreferences;
+    _alertservice = widget.alertservice;
+    _chatService = widget._chatService;
+    _checkInitialButtonState();
 
-    // Verifico cada 1.5 segundos si hay conexión y si sale de la página o app se para el timer
+    inactivityDuration =
+        int.parse(dotenv.env['TIEMPO_CHECAR_CONEXION_MILISEGUNDOS'] ?? '1500');
+    print('Inactivity duration: $inactivityDuration');
+
+    _checkInternetConnection();
     _inactivityTimer = Timer.periodic(
       Duration(milliseconds: inactivityDuration),
-      (timer) {
-        if (mounted) {
-          _checkInternetConnection();
-        }
-      },
+      (_) => _checkInternetConnection(),
     );
   }
 
   Future<void> _checkInternetConnection() async {
     _isConnected = await _alertservice.verificarConexion();
-    if (mounted) {
-      setState(() {});
-    }
+    if (mounted) setState(() {});
   }
 
-  void _checkInitialButtonState() async {
-    bool isPressed = await _botonPreferences.isBotonPresionado();
-    if (isPressed) {
+  Future<void> _checkInitialButtonState() async {
+    if (await _botonPreferences.isBotonPresionado()) {
       Navigator.pushNamed(context, '/alerta');
     }
   }
@@ -83,40 +76,24 @@ class _BotonViewState extends State<BotonView> {
         timer.cancel();
         _sendAlert();
       } else {
-        if (mounted) {
-          setState(() {
-            _start--;
-          });
-        }
+        if (mounted) setState(() => _start--);
       }
     });
   }
 
   void _resetTimer() {
     _timer?.cancel();
-    if (mounted) {
-      setState(() {
-        _start = initTimer;
-      });
-    }
+    if (mounted) setState(() => _start = initTimer);
   }
 
   void _handleTap() {
     if (_isConnected) {
-      // Inicia el temporizador si hay conexión
       if (_start > 0) {
-        if (mounted) {
-          setState(() {
-            _start--;
-          });
-        }
-        if (_start == 0) {
-          _sendAlert();
-        }
+        if (mounted) setState(() => _start--);
+        if (_start == 0) _sendAlert();
       }
       _resetInactivityTimer();
     } else {
-      // Si no hay conexión, realizar la llamada al 911 directamente
       _callEmergencyNumber();
     }
   }
@@ -126,11 +103,7 @@ class _BotonViewState extends State<BotonView> {
     _inactivityTimer = Timer(
       Duration(milliseconds: inactivityDuration),
       () {
-        if (mounted) {
-          setState(() {
-            _start = initTimer;
-          });
-        }
+        if (mounted) setState(() => _start = initTimer);
       },
     );
   }
@@ -138,34 +111,33 @@ class _BotonViewState extends State<BotonView> {
   Future<void> _sendAlert() async {
     if (await _alertservice.verificarConexion()) {
       try {
-        _alertservice.enviarAlerta().then((value) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Alerta enviada correctamente'),
-            ),
-          );
-        });
+        await _alertservice.enviarAlerta();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Alerta enviada correctamente')),
+        );
         Navigator.pushNamed(context, '/alerta');
       } catch (e) {
-        _showErrorDialog('Error al enviar la alerta',
-            'Error: no se pudo enviar la alerta, error servidor.',
-            isEmergency: true);
+        _showErrorDialog(
+          'Error al enviar la alerta',
+          'Error: no se pudo enviar la alerta, error servidor.',
+          isEmergency: true,
+        );
         Navigator.pushNamed(context, '/');
       }
       try {
         await _chatService.connect();
       } catch (e) {
-        //muestro un mensaje con el SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al conectar con el servidor de chat: $e'),
-          ),
+              content: Text('Error al conectar con el servidor de chat: $e')),
         );
       }
     } else {
-      _showErrorDialog('No hay conexión a internet o al servidor',
-          'No se pudo enviar la alerta, llamar al 911.',
-          isEmergency: true);
+      _showErrorDialog(
+        'No hay conexión a internet o al servidor',
+        'No se pudo enviar la alerta, llama al 911.',
+        isEmergency: true,
+      );
     }
   }
 
@@ -185,9 +157,7 @@ class _BotonViewState extends State<BotonView> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                if (isEmergency) {
-                  _callEmergencyNumber();
-                }
+                if (isEmergency) _callEmergencyNumber();
               },
               child: Text(isEmergency ? 'Llamar al 911' : 'Aceptar'),
             ),
@@ -203,9 +173,59 @@ class _BotonViewState extends State<BotonView> {
       drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text('Botón de Emergencia'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              'assets/logo1.png',
+              width: 40,
+              height: 40,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              'assets/logo2.png',
+              width: 40,
+              height: 40,
+            ),
+          ),
+        ],
       ),
-      body: Center(
-        child: _buildEmergencyButton(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Image.asset(
+                            'assets/logo2.png',
+                            width: 80, // Ajusta el tamaño según sea necesario
+                            height: 80,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Center(
+              child: _buildEmergencyButton(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -243,8 +263,7 @@ class _BotonViewState extends State<BotonView> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color.fromARGB(255, 92, 2,
-                        87), // Puedes ajustar el color a tu preferencia
+                    color: Colors.redAccent,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'package:boton_api/boton_api.dart';
 import 'package:boton_cosib/src/Services/AlertService.dart';
-import 'package:boton_cosib/src/Services/ChatService..dart';
+import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:boton_cosib/src/app_routes.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';

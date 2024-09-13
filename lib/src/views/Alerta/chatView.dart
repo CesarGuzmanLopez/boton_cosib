@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:boton_cosib/src/Services/ChatService..dart';
+import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:flutter/material.dart';
 
 class ChatView extends StatefulWidget {
