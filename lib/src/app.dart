@@ -1,5 +1,6 @@
 import 'package:boton_api/boton_api.dart';
-import 'package:boton_cosib/src/Services/AllertService.dart';
+import 'package:boton_cosib/src/Services/AlertService.dart';
+import 'package:boton_cosib/src/Services/ChatService..dart';
 import 'package:boton_cosib/src/app_routes.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,15 @@ class MyApp extends StatelessWidget {
     super.key,
     required this.settingsController,
     required BotonApi botonApi,
+    required ChatService chatService,
   }) {
-    alertService = Alertservice(botonApi: botonApi);
+    alertService = AlertService(botonApi: botonApi);
+    _chatService = chatService;
   }
-  late final Alertservice alertService;
+  late final AlertService alertService;
   final SettingsController settingsController;
   final BotonPreferences botonPreferences = BotonPreferences();
+  late ChatService _chatService;
   late final BotonApi botonApi;
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,11 @@ class MyApp extends StatelessWidget {
             darkTheme: ThemeData.dark(),
             themeMode: settingsController.themeMode,
             onGenerateRoute: (settings) => generateRoute(
-                settings, settingsController, botonPreferences, alertService));
+                settings,
+                settingsController,
+                botonPreferences,
+                alertService,
+                _chatService));
       },
     );
   }

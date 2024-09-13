@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:boton_cosib/src/Services/AllertService.dart';
+import 'package:boton_cosib/src/Services/AlertService.dart';
+import 'package:boton_cosib/src/Services/ChatService..dart';
 import 'package:boton_cosib/src/menu/AppDrawer.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,15 @@ class BotonView extends StatefulWidget {
     super.key,
     required this.botonPreferences,
     required this.alertservice,
-  });
+    required ChatService chatService,
+  }) : _chatService = chatService;
 
   final BotonPreferences botonPreferences;
-  final Alertservice alertservice;
-
+  final AlertService alertservice;
+  final ChatService _chatService;
   @override
   _BotonViewState createState() =>
-      _BotonViewState(botonPreferences, alertservice);
+      _BotonViewState(botonPreferences, alertservice, _chatService);
 }
 
 class _BotonViewState extends State<BotonView> {
@@ -29,14 +31,15 @@ class _BotonViewState extends State<BotonView> {
   late int inactivityDuration;
 
   final BotonPreferences _botonPreferences;
-  final Alertservice _alertservice;
-
+  final AlertService _alertservice;
+  final ChatService _chatService;
   int _start = initTimer;
   Timer? _timer;
   Timer? _inactivityTimer;
   bool _isConnected = true;
 
-  _BotonViewState(this._botonPreferences, this._alertservice) {
+  _BotonViewState(
+      this._botonPreferences, this._alertservice, this._chatService) {
     _checkInitialButtonState();
     inactivityDuration =
         int.parse(dotenv.env['TIEMPO_CHECAR_CONEXION_MILISEGUNDOS'] ?? '1500');
@@ -135,13 +138,29 @@ class _BotonViewState extends State<BotonView> {
   Future<void> _sendAlert() async {
     if (await _alertservice.verificarConexion()) {
       try {
-        _alertservice.enviarAlerta();
+        _alertservice.enviarAlerta().then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Alerta enviada correctamente'),
+            ),
+          );
+        });
         Navigator.pushNamed(context, '/alerta');
       } catch (e) {
         _showErrorDialog('Error al enviar la alerta',
             'Error: no se pudo enviar la alerta, error servidor.',
             isEmergency: true);
         Navigator.pushNamed(context, '/');
+      }
+      try {
+        await _chatService.connect();
+      } catch (e) {
+        //muestro un mensaje con el SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al conectar con el servidor de chat: $e'),
+          ),
+        );
       }
     } else {
       _showErrorDialog('No hay conexión a internet o al servidor',

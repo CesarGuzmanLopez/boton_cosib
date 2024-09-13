@@ -1,12 +1,13 @@
 import 'package:boton_api/boton_api.dart';
 import 'package:boton_cosib/src/model/alertType.dart';
-import 'package:boton_cosib/src/model/user.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:boton_cosib/src/preferences/UserPreferences.dart';
+import 'package:cross_file/cross_file.dart' as cross_file;
+import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 
-class Alertservice {
-  Alertservice({required this.botonApi}) {
+class AlertService {
+  AlertService({required this.botonApi}) {
     apiService = botonApi.getDefaultApi();
   }
 
@@ -15,14 +16,14 @@ class Alertservice {
   final UserPreferences _userPreferences = UserPreferences();
   late DefaultApi apiService;
 
-  /// Verifica si hay conexión a internet mediante una llamada a la API.
+  static const int successStatusCode = 200;
+
+  /// Verifica la conexión a internet mediante una llamada a la API.
   Future<bool> verificarConexion() async {
     try {
       final respuesta = await apiService.checarComunicacionGet();
-      // Se verifica si la respuesta tiene éxito.
-      return respuesta.statusCode == 200;
+      return respuesta.statusCode == successStatusCode;
     } catch (e) {
-      // En caso de error, se retorna `false`.
       return false;
     }
   }
@@ -30,10 +31,10 @@ class Alertservice {
   /// Enviar alerta con la información del usuario y su localización.
   Future<void> enviarAlerta() async {
     try {
-      final User user = await _userPreferences.getUser();
+      final user = await _userPreferences.getUser();
       _botonPreferences.setBotonPresionado(isPressed: true);
 
-      final Position position = await _getLocation();
+      final position = await _getLocation();
 
       final localizacion = EnviarAlertaPostRequestLocalizacion((b) => b
         ..latitude = position.latitude
@@ -44,7 +45,7 @@ class Alertservice {
         ..heading = position.heading
         ..speed = position.speed);
 
-      final String id = await _userPreferences.getIdDispositivo();
+      final id = await _userPreferences.getIdDispositivo();
 
       final alerta = EnviarAlertaPostRequest((b) => b
         ..idDispositivo = id
@@ -64,8 +65,7 @@ class Alertservice {
         throw Exception("El token es nulo");
       }
     } catch (e) {
-      _botonPreferences.setBotonPresionado(isPressed: false);
-      _botonPreferences.deleteAllData();
+      await _handleError(e);
       throw Exception("Error al enviar la alerta: $e");
     }
   }
@@ -75,10 +75,10 @@ class Alertservice {
     return await _userPreferences.getEstaEnLaUAM();
   }
 
-  /// Cancelar una alerta activa y eliminar el token.
+  /// Cancela una alerta activa y elimina el token.
   Future<void> cancelarAlerta() async {
     try {
-      final String? authorization = await _userPreferences.getBearerToken();
+      final authorization = await _userPreferences.getBearerToken();
       if (authorization == null) {
         throw Exception("No se ha guardado el token de autorización.");
       }
@@ -95,53 +95,20 @@ class Alertservice {
     } catch (e) {
       throw Exception("Error al cancelar la alerta: $e");
     } finally {
-      await _userPreferences.deleteBearerToken();
-      await _botonPreferences.deleteAllData();
+      await _clearData();
+      //redirect to home
     }
   }
 
   /// Envía la ubicación manualmente.
   Future<void> enviarUbicacion(String ubicacion) async {
-    try {
-      final String? authorization = await _userPreferences.getBearerToken();
-      if (authorization == null) {
-        throw Exception("No se ha guardado el token de autorización.");
-      }
-
-      final enviarMensajePostRequest = EnviarMensajePostRequest(
-        (b) => b..contenido = "Actualización de ubicación manual: $ubicacion",
-      );
-
-      await apiService.enviarMensajePost(
-        authorization: authorization,
-        enviarMensajePostRequest: enviarMensajePostRequest,
-      );
-    } catch (e) {
-      throw Exception("Error al enviar la ubicación: $e");
-    }
+    await _enviarMensaje("Actualización de ubicación manual: $ubicacion");
   }
 
   /// Define el tipo de alerta seleccionado por el usuario.
   Future<void> tipoAlerta(AlertButtonType type) async {
-    try {
-      final String? authorization = await _userPreferences.getBearerToken();
-      if (authorization == null) {
-        throw Exception("No se ha guardado el token de autorización.");
-      }
-
-      _botonPreferences.setTipoAlerta(type);
-
-      final enviarMensajePostRequest = EnviarMensajePostRequest(
-        (b) => b..contenido = "Alerta de tipo: ${type.label}",
-      );
-
-      await apiService.enviarMensajePost(
-        authorization: authorization,
-        enviarMensajePostRequest: enviarMensajePostRequest,
-      );
-    } catch (e) {
-      throw Exception("Error al enviar el tipo de alerta: $e");
-    }
+    _botonPreferences.setTipoAlerta(type);
+    await _enviarMensaje("Alerta de tipo: ${type.label}");
   }
 
   /// Obtiene la ubicación actual del dispositivo.
@@ -165,5 +132,68 @@ class Alertservice {
 
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+  }
+
+  Future<void> sendAlertaFoto(cross_file.XFile photo) async {
+    await _sendFile(photo, apiService.enviarFotoPost);
+  }
+
+  Future<void> sendAlertaVideo(cross_file.XFile video) async {
+    await _sendFile(video, apiService.enviarVideoPost);
+  }
+
+  Future<void> sendMoreInfo(String text) async {
+    await _enviarMensaje(text);
+  }
+
+  Future<void> _enviarMensaje(String contenido) async {
+    try {
+      final authorization = await _userPreferences.getBearerToken();
+      if (authorization == null) {
+        throw Exception("No se ha guardado el token de autorización.");
+      }
+
+      final enviarMensajePostRequest = EnviarMensajePostRequest(
+        (b) => b..contenido = contenido,
+      );
+
+      await apiService.enviarMensajePost(
+        authorization: authorization,
+        enviarMensajePostRequest: enviarMensajePostRequest,
+      );
+    } catch (e) {
+      throw Exception("Error al enviar el mensaje: $e");
+    }
+  }
+
+  Future<void> _sendFile(
+      cross_file.XFile file,
+      Future<Response> Function(
+              {required String authorization, required MultipartFile body})
+          apiMethod) async {
+    try {
+      final authorization = await _userPreferences.getBearerToken();
+      if (authorization == null) {
+        throw Exception("No se ha guardado el token de autorización.");
+      }
+
+      final multipartFile =
+          await MultipartFile.fromFile(file.path, filename: file.name);
+      await apiMethod(authorization: authorization, body: multipartFile);
+    } catch (e) {
+      await _handleError(e);
+      throw Exception("Error al enviar el archivo: $e");
+    }
+  }
+
+  Future<void> _handleError(Object e) async {
+    await _clearData();
+    // Log the error if needed
+  }
+
+  Future<void> _clearData() async {
+    _botonPreferences.setBotonPresionado(isPressed: false);
+    await _userPreferences.deleteBearerToken();
+    await _botonPreferences.deleteAllData();
   }
 }

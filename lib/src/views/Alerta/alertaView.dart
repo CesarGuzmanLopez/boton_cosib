@@ -1,4 +1,4 @@
-import 'package:boton_cosib/src/Services/AllertService.dart';
+import 'package:boton_cosib/src/Services/AlertService.dart';
 import 'package:boton_cosib/src/menu/AppDrawer.dart';
 import 'package:boton_cosib/src/model/alertType.dart';
 import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
@@ -16,7 +16,7 @@ class AlertaView extends StatefulWidget {
   });
 
   final BotonPreferences botonPreferences;
-  final Alertservice alertservice;
+  final AlertService alertservice;
 
   @override
   _AlertaViewState createState() =>
@@ -25,7 +25,7 @@ class AlertaView extends StatefulWidget {
 
 class _AlertaViewState extends State<AlertaView> {
   final BotonPreferences _botonPreferences;
-  final Alertservice _alertservice;
+  final AlertService _alertservice;
   bool _estaEnLaUAM = false;
   bool _isLoading = true;
   final TextEditingController _ubicacionController = TextEditingController();
@@ -204,6 +204,7 @@ class _AlertaViewState extends State<AlertaView> {
                         content: Text('Error al cancelar la alerta: $e'),
                       ),
                     );
+                    Navigator.pushNamed(context, '/');
                   });
                 },
                 child: const Text('Cancelar Alerta'),

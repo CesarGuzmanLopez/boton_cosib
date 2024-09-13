@@ -4,9 +4,6 @@
 
 import 'dart:async';
 
-import 'package:built_value/serializer.dart';
-import 'package:dio/dio.dart';
-
 import 'package:boton_api/src/api_util.dart';
 import 'package:boton_api/src/model/enviar_alerta_post200_response.dart';
 import 'package:boton_api/src/model/enviar_alerta_post_request.dart';
@@ -14,9 +11,10 @@ import 'package:boton_api/src/model/enviar_mensaje_post200_response.dart';
 import 'package:boton_api/src/model/enviar_mensaje_post_request.dart';
 import 'package:boton_api/src/model/reportes_listar_get200_response_inner.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:built_value/serializer.dart';
+import 'package:dio/dio.dart';
 
 class DefaultApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -36,7 +34,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarMensajePostRequest] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarMensajePostRequest>> checarComunicacionGet({ 
+  Future<Response<EnviarMensajePostRequest>> checarComunicacionGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -69,11 +67,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarMensajePostRequest),
-      ) as EnviarMensajePostRequest;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarMensajePostRequest),
+            ) as EnviarMensajePostRequest;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -110,7 +109,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarAlertaPost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarAlertaPost200Response>> enviarAlertaPost({ 
+  Future<Response<EnviarAlertaPost200Response>> enviarAlertaPost({
     required EnviarAlertaPostRequest enviarAlertaPostRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -137,11 +136,11 @@ class DefaultApi {
 
     try {
       const _type = FullType(EnviarAlertaPostRequest);
-      _bodyData = _serializers.serialize(enviarAlertaPostRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData =
+          _serializers.serialize(enviarAlertaPostRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -164,11 +163,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarAlertaPost200Response),
-      ) as EnviarAlertaPost200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarAlertaPost200Response),
+            ) as EnviarAlertaPost200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -195,7 +195,7 @@ class DefaultApi {
   /// Envía un archivo de audio al servicio de Telegram.
   ///
   /// Parameters:
-  /// * [authorization] 
+  /// * [authorization]
   /// * [body] - Audio en formato de bytes
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -206,7 +206,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarMensajePost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarMensajePost200Response>> enviarAudioPost({ 
+  Future<Response<EnviarMensajePost200Response>> enviarAudioPost({
     required String authorization,
     required MultipartFile body,
     CancelToken? cancelToken,
@@ -235,10 +235,9 @@ class DefaultApi {
 
     try {
       _bodyData = body.finalize();
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -261,11 +260,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarMensajePost200Response),
-      ) as EnviarMensajePost200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarMensajePost200Response),
+            ) as EnviarMensajePost200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -292,7 +292,7 @@ class DefaultApi {
   /// Envía una foto a través del servicio de Telegram.
   ///
   /// Parameters:
-  /// * [authorization] 
+  /// * [authorization]
   /// * [body] - Foto en formato de bytes
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -303,7 +303,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarMensajePost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarMensajePost200Response>> enviarFotoPost({ 
+  Future<Response<EnviarMensajePost200Response>> enviarFotoPost({
     required String authorization,
     required MultipartFile body,
     CancelToken? cancelToken,
@@ -332,10 +332,9 @@ class DefaultApi {
 
     try {
       _bodyData = body.finalize();
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -358,11 +357,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarMensajePost200Response),
-      ) as EnviarMensajePost200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarMensajePost200Response),
+            ) as EnviarMensajePost200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -389,7 +389,7 @@ class DefaultApi {
   /// Envía un mensaje de texto al servicio de Telegram.
   ///
   /// Parameters:
-  /// * [authorization] 
+  /// * [authorization]
   /// * [enviarMensajePostRequest] - Mensaje a enviar
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -400,7 +400,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarMensajePost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarMensajePost200Response>> enviarMensajePost({ 
+  Future<Response<EnviarMensajePost200Response>> enviarMensajePost({
     required String authorization,
     required EnviarMensajePostRequest enviarMensajePostRequest,
     CancelToken? cancelToken,
@@ -429,11 +429,11 @@ class DefaultApi {
 
     try {
       const _type = FullType(EnviarMensajePostRequest);
-      _bodyData = _serializers.serialize(enviarMensajePostRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = _serializers.serialize(enviarMensajePostRequest,
+          specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -456,11 +456,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarMensajePost200Response),
-      ) as EnviarMensajePost200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarMensajePost200Response),
+            ) as EnviarMensajePost200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -487,7 +488,7 @@ class DefaultApi {
   /// Envía un video a través del servicio de Telegram.
   ///
   /// Parameters:
-  /// * [authorization] 
+  /// * [authorization]
   /// * [body] - Video en formato de bytes
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -498,7 +499,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [EnviarMensajePost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<EnviarMensajePost200Response>> enviarVideoPost({ 
+  Future<Response<EnviarMensajePost200Response>> enviarVideoPost({
     required String authorization,
     required MultipartFile body,
     CancelToken? cancelToken,
@@ -527,10 +528,9 @@ class DefaultApi {
 
     try {
       _bodyData = body.finalize();
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -553,11 +553,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(EnviarMensajePost200Response),
-      ) as EnviarMensajePost200Response;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EnviarMensajePost200Response),
+            ) as EnviarMensajePost200Response;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -593,7 +594,8 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [BuiltList<ReportesListarGet200ResponseInner>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<BuiltList<ReportesListarGet200ResponseInner>>> reportesListarGet({ 
+  Future<Response<BuiltList<ReportesListarGet200ResponseInner>>>
+      reportesListarGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -626,11 +628,13 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(BuiltList, [FullType(ReportesListarGet200ResponseInner)]),
-      ) as BuiltList<ReportesListarGet200ResponseInner>;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(
+                  BuiltList, [FullType(ReportesListarGet200ResponseInner)]),
+            ) as BuiltList<ReportesListarGet200ResponseInner>;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -657,7 +661,7 @@ class DefaultApi {
   /// Devuelve un reporte específico basado en su ID.
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -667,7 +671,7 @@ class DefaultApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ReportesListarGet200ResponseInner] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportesListarGet200ResponseInner>> reportesObtenerIdGet({ 
+  Future<Response<ReportesListarGet200ResponseInner>> reportesObtenerIdGet({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -676,7 +680,10 @@ class DefaultApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/reportes/obtener/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _path = r'/reportes/obtener/{id}'.replaceAll(
+        '{' r'id' '}',
+        encodeQueryParameter(_serializers, id, const FullType(String))
+            .toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -701,11 +708,12 @@ class DefaultApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ReportesListarGet200ResponseInner),
-      ) as ReportesListarGet200ResponseInner;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ReportesListarGet200ResponseInner),
+            ) as ReportesListarGet200ResponseInner;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -727,5 +735,4 @@ class DefaultApi {
       extra: _response.extra,
     );
   }
-
 }
