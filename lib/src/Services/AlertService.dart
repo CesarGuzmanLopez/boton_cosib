@@ -22,6 +22,8 @@ class AlertService {
   Future<bool> verificarConexion() async {
     try {
       final respuesta = await apiService.checarComunicacionGet();
+      //obtengo la localizacion
+      await _getLocation();
       return respuesta.statusCode == successStatusCode;
     } catch (e) {
       return false;

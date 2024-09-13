@@ -32,6 +32,7 @@ dependencies:
   path_provider: ^2.1.4
   cross_file: ^0.3.4+2
   web_socket_channel: ^3.0.1
+  flutter_image_compress: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: const [
               Locale('en', ''),
-              Locale('es', ''),
             ],
             onGenerateTitle: (BuildContext context) =>
                 AppLocalizations.of(context)!.appTitle,
