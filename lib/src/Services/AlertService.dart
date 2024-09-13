@@ -4,6 +4,8 @@ import 'package:boton_cosib/src/preferences/BotonPreferences.dart';
 import 'package:boton_cosib/src/preferences/UserPreferences.dart';
 import 'package:cross_file/cross_file.dart' as cross_file;
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart'
+    show kIsWeb; // Verifica si es Flutter Web
 import 'package:geolocator/geolocator.dart';
 
 class AlertService {
@@ -23,9 +25,11 @@ class AlertService {
     try {
       final respuesta = await apiService.checarComunicacionGet();
       //obtengo la localizacion
+
       await _getLocation();
       return respuesta.statusCode == successStatusCode;
     } catch (e) {
+      print("Error al verificar la conexión: $e");
       return false;
     }
   }
@@ -179,8 +183,17 @@ class AlertService {
         throw Exception("No se ha guardado el token de autorización.");
       }
 
-      final multipartFile =
-          await MultipartFile.fromFile(file.path, filename: file.name);
+      MultipartFile multipartFile;
+      if (kIsWeb) {
+        // Flutter Web: usa fromBytes
+        final bytes = await file.readAsBytes();
+        multipartFile = MultipartFile.fromBytes(bytes, filename: file.name);
+      } else {
+        // Otras plataformas: usa fromFile
+        multipartFile =
+            await MultipartFile.fromFile(file.path, filename: file.name);
+      }
+
       await apiMethod(authorization: authorization, body: multipartFile);
     } catch (e) {
       await _handleError(e);

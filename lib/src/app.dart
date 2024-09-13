@@ -10,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'preferences/settings_controller.dart';
 
 /// The Widget that configures your application.
+
 class MyApp extends StatelessWidget {
   MyApp({
     super.key,
@@ -17,14 +18,17 @@ class MyApp extends StatelessWidget {
     required BotonApi botonApi,
     required ChatService chatService,
   }) {
+    // Usa el Dio configurado aquí
     alertService = AlertService(botonApi: botonApi);
     _chatService = chatService;
   }
+
   late final AlertService alertService;
   final SettingsController settingsController;
   final BotonPreferences botonPreferences = BotonPreferences();
   late ChatService _chatService;
   late final BotonApi botonApi;
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(

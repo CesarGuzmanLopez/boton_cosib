@@ -59,7 +59,12 @@ class _BotonViewState extends State<BotonView> {
   }
 
   Future<void> _checkInternetConnection() async {
-    _isConnected = await _alertservice.verificarConexion();
+    _isConnected = await _alertservice.verificarConexion().then((value) {
+      return value;
+    }).catchError((e) {
+      return false;
+    });
+
     if (mounted) setState(() {});
   }
 

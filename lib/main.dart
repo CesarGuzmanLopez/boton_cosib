@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:boton_api/boton_api.dart';
 import 'package:boton_cosib/src/Services/ChatService.dart';
 import 'package:boton_cosib/src/app.dart';
@@ -9,10 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  HttpOverrides.global = new MyHttpOverrides();
   await dotenv.load(fileName: ".env"); // Carga el archivo .env
-
   WidgetsFlutterBinding.ensureInitialized();
-
   // Inicializar UserPreferences
   final userPreferences = UserPreferences();
   final settingsService = SettingsService();
@@ -54,4 +55,13 @@ void main() async {
     botonApi: botonApi, // Pasar BotonApi al widget principal
     chatService: chatService,
   ));
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
