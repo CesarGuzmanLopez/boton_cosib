@@ -111,12 +111,26 @@ class _BotonViewState extends State<BotonView> {
   Future<void> _sendAlert() async {
     if (await _alertservice.verificarConexion()) {
       try {
+        // Mostrar el spinner
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+
         await _alertservice.enviarAlerta();
+        Navigator.of(context).pop(); // Cerrar el spinner
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Alerta enviada correctamente')),
         );
         Navigator.pushNamed(context, '/alerta');
       } catch (e) {
+        Navigator.of(context).pop(); // Cerrar el spinner en caso de error
         _showErrorDialog(
           'Error al enviar la alerta',
           'Error: no se pudo enviar la alerta, error servidor.',
